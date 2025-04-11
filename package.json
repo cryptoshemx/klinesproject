@@ -1,0 +1,24 @@
+{
+    "name": "klines-project",
+    "version": "1.0.0",
+    "description": "Proyecto para construir múltiples timeframes a partir de WebSocket de 1m en Binance Futures",
+    "main": "src/index.js",
+    "scripts": {
+      "start": "node src/index.js"
+    },
+    "keywords": [
+      "binance",
+      "futures",
+      "klines",
+      "crypto",
+      "websocket",
+      "nodejs"
+    ],
+    "author": "TuNombre",
+    "license": "MIT",
+    "dependencies": {
+      "axios": "^1.6.7",
+      "ws": "^8.15.1"
+    }
+  }
+  

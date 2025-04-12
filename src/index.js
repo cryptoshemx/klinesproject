@@ -1,12 +1,13 @@
 const { fetchInitialKlines } = require('./initData');
 const startWS = require('./wsClient');
-
-// Símbolos fijos por ahora (más adelante dinámico con API)
-const symbols = ['btcusdt', 'ethusdt', 'bnbusdt', 'solusdt'];
+const { SYMBOLS } = require('./config');
 
 async function init() {
-  await fetchInitialKlines(symbols);  // carga 1000 klines por símbolo
-  startWS(symbols);                   // luego inicia WebSocket
+  console.log('🔄 Cargando klines iniciales...');
+  await fetchInitialKlines(SYMBOLS);  // carga klines iniciales por símbolo
+  console.log('✅ Klines iniciales cargados');
+  console.log('🔌 Iniciando WebSocket...');
+  startWS(SYMBOLS);                   // luego inicia WebSocket
 }
 
 init();

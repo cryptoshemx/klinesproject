@@ -1,11 +1,9 @@
 const axios = require('axios');
 const { klinesData } = require('./klineStore');
+const { TIMEFRAMES, REST_BASE_URL, REQUEST_LIMIT, INITIAL_KLINES, INTERVALS_MS } = require('./config');
 
-const timeframes = ['1m', '5m', '15m', '1h', '1d'];
-const REQUEST_LIMIT = 250;
-
-async function fetchInitialKlines(symbols, total = 1000) {
-  for (const tf of timeframes) {
+async function fetchInitialKlines(symbols, total = INITIAL_KLINES) {
+  for (const tf of TIMEFRAMES) {
     console.log(`📥 Descargando ${tf} para todos los símbolos...`);
 
     for (const symbol of symbols) {
@@ -15,7 +13,7 @@ async function fetchInitialKlines(symbols, total = 1000) {
 
       for (let i = 0; i < Math.ceil(total / REQUEST_LIMIT); i++) {
         const endTime = Date.now() - i * REQUEST_LIMIT * getMs(tf);
-        const url = `https://fapi.binance.com/fapi/v1/klines?symbol=${symbol.toUpperCase()}&interval=${tf}&limit=${REQUEST_LIMIT}&endTime=${endTime}`;
+        const url = `${REST_BASE_URL}/klines?symbol=${symbol.toUpperCase()}&interval=${tf}&limit=${REQUEST_LIMIT}&endTime=${endTime}`;
 
         try {
           const res = await axios.get(url);
@@ -25,7 +23,7 @@ async function fetchInitialKlines(symbols, total = 1000) {
             h: k[2],
             l: k[3],
             c: k[4],
-            v: k[5]
+            v: k[5] // Volumen base
           }));
 
           tfKlines.unshift(...parsed); // Para mantener orden cronológico
@@ -41,14 +39,7 @@ async function fetchInitialKlines(symbols, total = 1000) {
 }
 
 function getMs(tf) {
-  const map = {
-    '1m': 60 * 1000,
-    '5m': 5 * 60 * 1000,
-    '15m': 15 * 60 * 1000,
-    '1h': 60 * 60 * 1000,
-    '1d': 24 * 60 * 60 * 1000
-  };
-  return map[tf];
+  return INTERVALS_MS[tf];
 }
 
 module.exports = { fetchInitialKlines };
